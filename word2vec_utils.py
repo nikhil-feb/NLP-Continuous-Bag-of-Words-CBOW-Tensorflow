@@ -85,6 +85,8 @@ def batch_gen(download_url, expected_byte, vocab_size, batch_size,
 
 
 def generate_cbow_sample(test_index, window_size):
+    """ create a context, target pairs with specified window size.
+        """
     i = 0
     for index, word in enumerate(test_index):
         if index >= window_size and index <= (len(test_index) - window_size - 1):
@@ -95,5 +97,15 @@ def generate_cbow_sample(test_index, window_size):
             context.extend(test_index[(index + 1):(index + window_size + 1)])
             i += 1
             yield context, target
+
+def cbow_batch_gen(batch_size,train_new,window_size):
+    """ creates batches of context, target pairs.
+            """
+    while True:
+        context_batch = np.zeros([batch_size,2*window_size], dtype=np.int32)
+        target_batch = np.zeros([batch_size, 1])
+        for i in range(batch_size):
+            context_batch[i],target_batch[i] = next(train_new)
+        yield context_batch,target_batch
 
 
